@@ -1,5 +1,7 @@
 # The Siege of GitHub
 
+![Alt text](siege.png)
+
 This repository holds the working plan for *The Siege of GitHub: Capture The Flag* events.
 
 ## 10 Flags, 11 winners
