@@ -4,18 +4,20 @@
 
 This repository holds the working plan for *The Siege of GitHub: Capture The Flag* events.
 
-## 10 Flags, 11 winners
+## 12 Flags, 12 Winners
 
-1.	Introduction to GitHub
-2.	GitHub Pages
-3.	Intro to Repository Management
-4.	Customize your GitHub Copilot experience
-5.	Integrate MCP with GitHub Copilot
-6.	Modernize your legacy code with GitHub Copilot
-7.	Scale institutional knowledge with GitHub Copilot Spaces
-8.	Build applications with GitHub Copilot agent mode
-9.	AI in Actions
-10.	Introduction to CodeQL
+1.	[Introduction to GitHub](https://github.com/skills-dev/introduction-to-github)
+2.	[GitHub Pages](https://github.com/skills-dev/github-pages)
+3.	[Intro to Repository Management](https://github.com/skills/introduction-to-repository-management)
+4.	[Customize your GitHub Copilot experience](https://github.com/skills/customize-your-github-copilot-experience)
+5.	[Integrate MCP with GitHub Copilot](https://github.com/skills/integrate-mcp-with-copilot)
+6.	[Modernize your legacy code with GitHub Copilot](https://github.com/skills/modernize-your-legacy-code-with-github-copilot)
+7.	[Scale institutional knowledge with GitHub Copilot Spaces](https://github.com/skills/scale-institutional-knowledge-using-copilot-spaces)
+8.	[Build applications with GitHub Copilot agent mode](https://github.com/skills/build-applications-w-copilot-agent-mode)
+9.	[AI in Actions](https://github.com/skills/ai-in-actions)
+10.	[Secure your code supply chain](https://github.com/skills-dev/secure-repository-supply-chain)
+11. [Introduction to CodeQL](https://github.com/skills-dev/introduction-to-codeql)
+12. [Migrate Azure DevOps Repository](https://github.com/skills/migrate-ado-repository)
 
 ## Who can participate?
 
