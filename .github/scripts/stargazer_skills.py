@@ -34,7 +34,7 @@ def get_stargazers(owner, repo, token):
 
 def is_recent(starred_at):
     star_time = datetime.strptime(starred_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
-    return datetime.now(timezone.utc) - star_time <= timedelta(days=1)
+    return datetime.now(timezone.utc) - star_time <= timedelta(days=7)
 
 def get_user_forks(g, username):
     user = g.get_user(username)
