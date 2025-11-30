@@ -78,7 +78,8 @@ def check_user_recent_skills(g, username):
     try:
         repos = get_user_forks(g, username)
         print(f'Found {len(repos)} skill forks for user: {username}')
-    except Exception:
+    except Exception as e:
+        print(f'Error fetching forks for user: {username}, error: {e}')
         return
     for repo in repos:
         commits = list(repo.get_commits())
