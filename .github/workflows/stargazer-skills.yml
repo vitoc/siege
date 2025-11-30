@@ -36,11 +36,7 @@ jobs:
         run: |
           python .github/scripts/stargazer_skills.py
 
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: EndBug/add-and-commit@v9
         with:
-          commit_message: Update skills time results
-          branch: main
-          file_pattern: '*.json'
-        env:
-          GIT_AUTH_TOKEN: ${{ secrets.TOKEN }}
+          default_author: github_actions
+
