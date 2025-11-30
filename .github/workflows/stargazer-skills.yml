@@ -1,0 +1,44 @@
+name: Stargazer Skills Tracker
+
+
+on:
+  schedule:
+    - cron: '0 * * * *' # every hour
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'GitHub username to check for 24h skills/skills-dev activity (optional)'
+        required: false
+        type: string
+
+jobs:
+  track-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests PyGithub
+
+      - name: Run stargazer skills script
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          INPUT_USERNAME: ${{ github.event.inputs.username }}
+        run: |
+          python .github/scripts/stargazer_skills.py
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update skills time results
+          branch: ${{ github.ref }}
+          file_pattern: '*.json'
