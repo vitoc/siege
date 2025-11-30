@@ -42,3 +42,5 @@ jobs:
           commit_message: Update skills time results
           branch: main
           file_pattern: '*.json'
+        env:
+          GIT_AUTH_TOKEN: ${{ secrets.TOKEN }}
