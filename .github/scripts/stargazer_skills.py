@@ -87,13 +87,15 @@ def check_user_recent_skills(g, username):
             continue
         last_commit = commits[0]
         last_commit_time = last_commit.commit.committer.date.replace(tzinfo=timezone.utc)
-        if datetime.now(timezone.utc) - last_commit_time > timedelta(days=):
+        print(f'Last commit time: {last_commit_time}')
+        if datetime.now(timezone.utc) - last_commit_time > timedelta(days=7):
             continue
         if last_commit.commit.message.strip() != 'Congratulations!🎉':
             continue
         first_commit = commits[-1]
         diff = last_commit.commit.committer.date - first_commit.commit.committer.date
-        update_json_file(repo.full_name, username, int(diff.total_seconds()))
+        print(f'User: {username}, Repo: {repo.full_name}, Time diff: {diff.total_seconds()} seconds')
+        update_json_file(repo.name, username, int(diff.total_seconds()))
 
 def main():
     token = os.environ.get('GITHUB_TOKEN')
