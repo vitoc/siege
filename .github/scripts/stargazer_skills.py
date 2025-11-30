@@ -73,6 +73,7 @@ def update_json_file(repo_name, user, time_diff):
     data.append({'user': user, 'time_diff_seconds': time_diff})
     with open(filename, 'w') as f:
         json.dump(data, f, indent=2)
+        print(f'Updated {filename} with user: {user}, time_diff: {time_diff} seconds')
 
 def check_user_recent_skills(g, username):
     try:

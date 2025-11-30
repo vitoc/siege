@@ -3,7 +3,7 @@ name: Stargazer Skills Tracker
 
 on:
   schedule:
-    - cron: '0 * * * *' # every hour
+    - cron: '0 0 * * 0' # every week (at 00:00 on Sunday)
   workflow_dispatch:
     inputs:
       username:
@@ -40,5 +40,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update skills time results
-          branch: ${{ github.ref }}
+          branch: main
           file_pattern: '*.json'
