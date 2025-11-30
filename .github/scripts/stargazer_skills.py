@@ -39,14 +39,14 @@ def is_recent(starred_at):
 
 def get_user_forks(g, username):
     user = g.get_user(username)
-    # print(f'Fetched user: {username}')
+    print(f'Fetched user: {username}')
     user_repos = user.get_repos()
-    # print(f'Fetched {user_repos.totalCount} repos for user: {username}')
-    # print(user_repos)
+    print(f'Fetched {user_repos.totalCount} repos for user: {username}')
+    print(user_repos)
     forks = []
     for repo in user_repos:
-        # print(f'Checking repo: {repo.full_name}')
-        # print(f'Checking repo: {repo.name}')
+        print(f'Checking repo: {repo.full_name}')
+        print(f'Checking repo: {repo.name}')
         if (repo.name.startswith('skills-') or repo.name.startswith('skills-dev')):
             print(f'Found skill repo: {repo.full_name} for user: {username}')
             forks.append(repo)
