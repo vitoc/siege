@@ -2,7 +2,7 @@
 
 ![Alt text](siege.png)
 
-This repository holds the working plan for *The Siege of GitHub: Capture The Flag* events.
+This repository holds the working repository for *The Siege of GitHub: Capture The Flag* events.
 
 ## 12 Flags, 12 Winners
 
@@ -25,9 +25,21 @@ Anyone with interest to learn GitHub! The event is a learning experience, and th
 
 ## How can I participate?
 
+Anyone can participate in this Capture The Flag activity in 3 easy steps.
+
+### 1. Star this repo!
+
 You can sign up by starring this repository.
 
 (Yes, it’s that easy 😊, thanks to the [star](https://docs.github.com/en/webhooks/webhook-events-and-payloads#star) API)
+
+* The GitHub Actions that updates the ranking looks for 12 Flags repositories of each stargazer of this repository to get their respective completion times of each flag.
+
+### 2. Complete any of the 12 flags above in the fastest time possible
+
+### 3. Check your ranking
+
+By going to the [ranking page](https://www.vitochin.com/siege)
 
 ## Can I skip the easy flags?
 
