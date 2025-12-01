@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GitHub Skills Learn-a-thon Rankings</title>
+	<style>
+		body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+		.container { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 32px; }
+		h1 { text-align: center; }
+		.flag-menu { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px; }
+		.flag-btn { background: #e1e4e8; border: none; border-radius: 4px; padding: 8px 16px; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+		.flag-btn.active, .flag-btn:hover { background: #0366d6; color: #fff; }
+		table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+		th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+		th { background: #f6f8fa; }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>GitHub Skills Learn-a-thon Rankings</h1>
+		<div class="flag-menu" id="flagMenu">
+			<!-- Flag buttons will be injected here -->
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>Rank</th>
+					<th>Participant</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody id="rankingTable">
+				<!-- Ranking rows will be injected here -->
+			</tbody>
+		</table>
+	</div>
+	<script>
+		// 12 Flags from README.md
+		const flags = [
+			{ name: 'Introduction to GitHub', url: 'https://github.com/skills-dev/introduction-to-github' },
+			{ name: 'GitHub Pages', url: 'https://github.com/skills-dev/github-pages' },
+			{ name: 'Intro to Repository Management', url: 'https://github.com/skills/introduction-to-repository-management' },
+			{ name: 'Customize your GitHub Copilot experience', url: 'https://github.com/skills/customize-your-github-copilot-experience' },
+			{ name: 'Integrate MCP with GitHub Copilot', url: 'https://github.com/skills/integrate-mcp-with-copilot' },
+			{ name: 'Modernize your legacy code with GitHub Copilot', url: 'https://github.com/skills/modernize-your-legacy-code-with-github-copilot' },
+			{ name: 'Scale institutional knowledge with GitHub Copilot Spaces', url: 'https://github.com/skills/scale-institutional-knowledge-using-copilot-spaces' },
+			{ name: 'Build applications with GitHub Copilot agent mode', url: 'https://github.com/skills/build-applications-w-copilot-agent-mode' },
+			{ name: 'AI in Actions', url: 'https://github.com/skills/ai-in-actions' },
+			{ name: 'Secure your code supply chain', url: 'https://github.com/skills-dev/secure-repository-supply-chain' },
+			{ name: 'Introduction to CodeQL', url: 'https://github.com/skills-dev/introduction-to-codeql' },
+			{ name: 'Migrate Azure DevOps Repository', url: 'https://github.com/skills/migrate-ado-repository' },
+		];
+
+		// Placeholder ranking data for each flag
+		const rankings = flags.map((flag, i) => [
+			{ participant: 'Alice', score: 100 - i },
+			{ participant: 'Bob', score: 90 - i },
+			{ participant: 'Charlie', score: 80 - i }
+		]);
+
+		const flagMenu = document.getElementById('flagMenu');
+		const rankingTable = document.getElementById('rankingTable');
+		let currentFlag = 0;
+
+		function renderMenu() {
+			flagMenu.innerHTML = '';
+			flags.forEach((flag, idx) => {
+				const btn = document.createElement('button');
+				btn.className = 'flag-btn' + (idx === currentFlag ? ' active' : '');
+				btn.textContent = `${idx + 1}. ${flag.name}`;
+				btn.onclick = () => {
+					currentFlag = idx;
+					renderMenu();
+					renderTable();
+				};
+				btn.title = flag.name;
+				flagMenu.appendChild(btn);
+			});
+		}
+
+		function renderTable() {
+			const rows = rankings[currentFlag].map((entry, i) =>
+				`<tr><td>${i + 1}</td><td>${entry.participant}</td><td>${entry.score}</td></tr>`
+			).join('');
+			rankingTable.innerHTML = rows;
+		}
+
+		// Initial render
+		renderMenu();
+		renderTable();
+	</script>
+</body>
+</html>
