@@ -41,6 +41,8 @@ You can sign up by starring this repository.
 
 By going to the [ranking page](https://www.vitochin.com/siege)
 
+* The ranking page normally updates every week, unless there's a CTP event. At a CTP event, it will update whenever a participant declares that he'd completed a flag!
+
 ## Can I skip the easy flags?
 
 Absolutely! It’s really up to you. In a CTA event, there’s a prize for the winner that captures each of the flag first. So, you can either play it fast by going through what you’re familiar quickly (and competing with more people) or go for the harder flags that less people will be competing for.
