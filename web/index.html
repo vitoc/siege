@@ -18,7 +18,7 @@
 </head>
 <body>
 	<div class="container">
-		<h1>GitHub Skills Learn-a-thon Rankings</h1>
+		<h1>The Siege of GitHub: Capture the Flag Rankings</h1>
 		<div class="flag-menu" id="flagMenu">
 			<!-- Flag buttons will be injected here -->
 		</div>
@@ -27,7 +27,7 @@
 				<tr>
 					<th>Rank</th>
 					<th>Participant</th>
-					<th>Score</th>
+					<th>Time (minutes)</th>
 				</tr>
 			</thead>
 			<tbody id="rankingTable">
@@ -52,16 +52,47 @@
 			{ name: 'Migrate Azure DevOps Repository', url: 'https://github.com/skills/migrate-ado-repository' },
 		];
 
-		// Placeholder ranking data for each flag
-		const rankings = flags.map((flag, i) => [
-			{ participant: 'Alice', score: 100 - i },
-			{ participant: 'Bob', score: 90 - i },
-			{ participant: 'Charlie', score: 80 - i }
-		]);
-
+		// Dynamic ranking data for each flag
+		const rankings = Array(flags.length).fill(null);
 		const flagMenu = document.getElementById('flagMenu');
 		const rankingTable = document.getElementById('rankingTable');
 		let currentFlag = 0;
+
+		function getJsonFileName(flagName) {
+			// Convert flag name to lowercase, replace spaces and special chars with '-'
+			// Use the same convention as in the repo: skills-<flag>.json
+			let base = flagName
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/-+/g, '-')
+				.replace(/^-|-$/g, '');
+			return `skills-${base}.json`;
+		}
+
+		async function fetchRanking(idx) {
+			const flag = flags[idx];
+			const fileName = getJsonFileName(flag.name);
+			const url = `https://raw.githubusercontent.com/vitoc/siege/refs/heads/main/${fileName}`;
+			try {
+				const resp = await fetch(url);
+				if (!resp.ok) throw new Error('Not found');
+				const data = await resp.json();
+				// Sort by time_diff_seconds ascending (lower is better)
+				if (Array.isArray(data)) {
+					rankings[idx] = data
+						.map((entry, i) => ({
+							participant: entry.user || entry.participant || `User${i+1}`,
+							score: entry.time_diff_seconds || entry.score || 0
+						}))
+						.sort((a, b) => a.score - b.score);
+				} else {
+					rankings[idx] = [];
+				}
+			} catch (e) {
+				rankings[idx] = null; // null means no data
+			}
+			if (idx === currentFlag) renderTable();
+		}
 
 		function renderMenu() {
 			flagMenu.innerHTML = '';
@@ -72,7 +103,8 @@
 				btn.onclick = () => {
 					currentFlag = idx;
 					renderMenu();
-					renderTable();
+					if (rankings[idx] === null) fetchRanking(idx);
+					else renderTable();
 				};
 				btn.title = flag.name;
 				flagMenu.appendChild(btn);
@@ -80,15 +112,25 @@
 		}
 
 		function renderTable() {
-			const rows = rankings[currentFlag].map((entry, i) =>
-				`<tr><td>${i + 1}</td><td>${entry.participant}</td><td>${entry.score}</td></tr>`
-			).join('');
+			const data = rankings[currentFlag];
+			if (data === null) {
+				rankingTable.innerHTML = '<tr><td colspan="3">No participants in the flag challenge yet.</td></tr>';
+				return;
+			}
+			if (!Array.isArray(data) || data.length === 0) {
+				rankingTable.innerHTML = '<tr><td colspan="3">No participants in the flag challenge yet.</td></tr>';
+				return;
+			}
+			const rows = data.map((entry, i) => {
+				const minutes = (entry.score / 60).toFixed(2);
+				return `<tr><td>${i + 1}</td><td>${entry.participant}</td><td>${minutes}</td></tr>`;
+			}).join('');
 			rankingTable.innerHTML = rows;
 		}
 
 		// Initial render
 		renderMenu();
-		renderTable();
+		fetchRanking(currentFlag);
 	</script>
 </body>
 </html>
