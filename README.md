@@ -33,7 +33,7 @@ You can sign up by starring this repository.
 
 (Yes, it’s that easy 😊, thanks to the [star](https://docs.github.com/en/webhooks/webhook-events-and-payloads#star) API)
 
-* The GitHub Actions that updates the ranking looks for 12 Flags repositories of each stargazer of this repository to get their respective completion times of each flag.
+* The GitHub Actions workflow that updates the ranking of this CTF looks for 12 Flags repositories of each stargazer of this repository to get their respective completion times of each flag.
 
 ### 2. Complete any of the 12 flags above in the fastest time possible
 
