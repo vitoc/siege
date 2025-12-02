@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>The Siege of GitHub: Capture the Flag Rankings</title>
+	<style>
+		body {
+			background: linear-gradient(120deg, #155799cc, #159957cc), url('./castle_bg.png') center center/cover no-repeat fixed;
+			min-height: 100vh;
+			margin: 0;
+			padding: 0;
+			font-family: 'Press Start 2P', 'Segoe UI', Arial, sans-serif;
+		}
+		.container {
+			max-width: 900px;
+			margin: 40px auto;
+			background: rgba(255,255,255,0.15);
+			border-radius: 16px;
+			box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+			padding: 32px;
+			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
+			border: 1px solid rgba(255,255,255,0.18);
+		}
+		h1 {
+			text-align: center;
+			color: #fff;
+			text-shadow: 0 2px 8px #0005;
+			font-family: 'Press Start 2P', cursive, sans-serif;
+			font-size: 1.2rem;
+			letter-spacing: 1px;
+		}
+		.flag-menu {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: center;
+			margin-bottom: 32px;
+		}
+		.flag-btn {
+			background: rgba(255,255,255,0.25);
+			border: none;
+			border-radius: 8px;
+			padding: 10px 20px;
+			cursor: pointer;
+			font-size: 0.75rem;
+			color: #fff;
+			font-family: 'Press Start 2P', cursive, sans-serif;
+			font-weight: 500;
+			box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.15);
+			transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+		}
+		.flag-btn.active, .flag-btn:hover {
+			background: #159957;
+			color: #fff;
+			box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.25);
+		}
+		table {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			margin-top: 16px;
+			background: rgba(255,255,255,0.25);
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.10);
+		}
+		th, td {
+			padding: 16px 12px;
+			text-align: left;
+			color: #222;
+			font-family: 'Press Start 2P', cursive, sans-serif;
+			font-size: 0.7rem;
+		}
+		th {
+			background: rgba(255,255,255,0.35);
+			color: #155799;
+			font-size: 0.8rem;
+			font-weight: 600;
+			border-bottom: 2px solid #15995744;
+		}
+		tr {
+			transition: background 0.2s;
+		}
+		tbody tr:hover {
+			background: rgba(21, 87, 153, 0.08);
+		}
+		td {
+			border-bottom: 1px solid #15995722;
+		}
+		tbody tr:last-child td {
+			border-bottom: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>The Siege of GitHub: Capture the Flag Rankings</h1>
+		<div class="flag-menu" id="flagMenu">
+			<!-- Flag buttons will be injected here -->
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>Rank</th>
+					<th>Participant</th>
+					<th>Time (minutes)</th>
+				</tr>
+			</thead>
+			<tbody id="rankingTable">
+				<!-- Ranking rows will be injected here -->
+			</tbody>
+		</table>
+		<div style="text-align: center; margin-top: 24px;">
+			<a href="https://github.com/vitoc/siege" target="_blank" style="color: #fff; text-decoration: none; font-family: 'Press Start 2P', cursive, sans-serif; font-size: 0.7rem; background: rgba(255,255,255,0.25); padding: 12px 24px; border-radius: 8px; display: inline-block; box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.15); transition: background 0.2s, box-shadow 0.2s;">
+				GitHub Repo and More Info
+			</a>
+		</div>
+	</div>
+	<script>
+		// 12 Flags from README.md
+		const flags = [
+			{ name: 'Introduction to GitHub', url: 'https://github.com/skills-dev/introduction-to-github' },
+			{ name: 'GitHub Pages', url: 'https://github.com/skills-dev/github-pages' },
+			{ name: 'Intro to Repository Management', url: 'https://github.com/skills/introduction-to-repository-management' },
+			{ name: 'Customize your GitHub Copilot experience', url: 'https://github.com/skills/customize-your-github-copilot-experience' },
+			{ name: 'Integrate MCP with GitHub Copilot', url: 'https://github.com/skills/integrate-mcp-with-copilot' },
+			{ name: 'Modernize your legacy code with GitHub Copilot', url: 'https://github.com/skills/modernize-your-legacy-code-with-github-copilot' },
+			{ name: 'Scale institutional knowledge with GitHub Copilot Spaces', url: 'https://github.com/skills/scale-institutional-knowledge-using-copilot-spaces' },
+			{ name: 'Build applications with GitHub Copilot agent mode', url: 'https://github.com/skills/build-applications-w-copilot-agent-mode' },
+			{ name: 'AI in Actions', url: 'https://github.com/skills/ai-in-actions' },
+			{ name: 'Secure your code supply chain', url: 'https://github.com/skills-dev/secure-repository-supply-chain' },
+			{ name: 'Introduction to CodeQL', url: 'https://github.com/skills-dev/introduction-to-codeql' },
+			{ name: 'Migrate Azure DevOps Repository', url: 'https://github.com/skills/migrate-ado-repository' },
+		];
+
+		// Dynamic ranking data for each flag
+		const rankings = Array(flags.length).fill(null);
+		const flagMenu = document.getElementById('flagMenu');
+		const rankingTable = document.getElementById('rankingTable');
+		let currentFlag = 0;
+
+		function getJsonFileName(flagName) {
+			// Convert flag name to lowercase, replace spaces and special chars with '-'
+			// Use the same convention as in the repo: skills-<flag>.json
+			let base = flagName
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/-+/g, '-')
+				.replace(/^-|-$/g, '');
+			return `skills-${base}.json`;
+		}
+
+		async function fetchRanking(idx) {
+			const flag = flags[idx];
+			const fileName = getJsonFileName(flag.name);
+			const url = `https://raw.githubusercontent.com/vitoc/siege/refs/heads/main/${fileName}`;
+			try {
+				const resp = await fetch(url);
+				if (!resp.ok) throw new Error('Not found');
+				const data = await resp.json();
+				// Sort by time_diff_seconds ascending (lower is better)
+				if (Array.isArray(data)) {
+					rankings[idx] = data
+						.map((entry, i) => ({
+							participant: entry.user || entry.participant || `User${i+1}`,
+							score: entry.time_diff_seconds || entry.score || 0
+						}))
+						.sort((a, b) => a.score - b.score);
+				} else {
+					rankings[idx] = [];
+				}
+			} catch (e) {
+				rankings[idx] = null; // null means no data
+			}
+			if (idx === currentFlag) renderTable();
+		}
+
+		function renderMenu() {
+			flagMenu.innerHTML = '';
+			flags.forEach((flag, idx) => {
+				const btn = document.createElement('button');
+				btn.className = 'flag-btn' + (idx === currentFlag ? ' active' : '');
+				btn.textContent = `${idx + 1}. ${flag.name}`;
+				btn.onclick = () => {
+					currentFlag = idx;
+					renderMenu();
+					if (rankings[idx] === null) fetchRanking(idx);
+					else renderTable();
+				};
+				btn.title = flag.name;
+				flagMenu.appendChild(btn);
+			});
+		}
+
+		function renderTable() {
+			const data = rankings[currentFlag];
+			if (data === null) {
+				rankingTable.innerHTML = '<tr><td colspan="3">No participants in the flag challenge yet.</td></tr>';
+				return;
+			}
+			if (!Array.isArray(data) || data.length === 0) {
+				rankingTable.innerHTML = '<tr><td colspan="3">No participants in the flag challenge yet.</td></tr>';
+				return;
+			}
+			const rows = data.map((entry, i) => {
+				const minutes = (entry.score / 60).toFixed(2);
+				return `<tr><td>${i + 1}</td><td>${entry.participant}</td><td>${minutes}</td></tr>`;
+			}).join('');
+			rankingTable.innerHTML = rows;
+		}
+
+		// Initial render
+		renderMenu();
+		fetchRanking(currentFlag);
+	</script>
+</body>
+</html>
