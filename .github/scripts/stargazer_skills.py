@@ -64,7 +64,9 @@ def get_commit_time_diff(repo):
     return int(diff.total_seconds())
 
 def update_json_file(repo_name, user, time_diff):
+    
     filename = f'{repo_name.replace("/", "-")}.json'
+    print(f'Updating file: {filename} for user: {user} with time_diff: {time_diff} seconds')
     if os.path.exists(filename):
         with open(filename, 'r') as f:
             data = json.load(f)
@@ -125,7 +127,7 @@ def main():
             for fork in forks:
                 time_diff = get_commit_time_diff(fork)
                 if time_diff is not None:
-                    update_json_file(fork.full_name, user, time_diff)
+                    update_json_file(fork.name, user, time_diff)
 
 if __name__ == '__main__':
     main()
