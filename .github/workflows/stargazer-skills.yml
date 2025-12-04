@@ -10,6 +10,8 @@ on:
         description: 'GitHub username to check for 24h skills/skills-dev activity (optional)'
         required: false
         type: string
+  issues:
+    types: [opened]
 
 jobs:
   track-skills:
@@ -40,5 +42,5 @@ jobs:
         with:
           author_name: "Vito Chin"
           author_email: "vito@php.net"
-          
+
 

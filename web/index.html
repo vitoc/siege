@@ -5,102 +5,25 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>The Siege of GitHub: Capture the Flag Rankings</title>
-	<style>
-		body {
-			background: linear-gradient(120deg, #155799cc, #159957cc), url('./castle_bg.png') center center/cover no-repeat fixed;
-			min-height: 100vh;
-			margin: 0;
-			padding: 0;
-			font-family: 'Press Start 2P', 'Segoe UI', Arial, sans-serif;
-		}
-		.container {
-			max-width: 900px;
-			margin: 40px auto;
-			background: rgba(255,255,255,0.15);
-			border-radius: 16px;
-			box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-			padding: 32px;
-			backdrop-filter: blur(8px);
-			-webkit-backdrop-filter: blur(8px);
-			border: 1px solid rgba(255,255,255,0.18);
-		}
-		h1 {
-			text-align: center;
-			color: #fff;
-			text-shadow: 0 2px 8px #0005;
-			font-family: 'Press Start 2P', cursive, sans-serif;
-			font-size: 1.2rem;
-			letter-spacing: 1px;
-		}
-		.flag-menu {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 10px;
-			justify-content: center;
-			margin-bottom: 32px;
-		}
-		.flag-btn {
-			background: rgba(255,255,255,0.25);
-			border: none;
-			border-radius: 8px;
-			padding: 10px 20px;
-			cursor: pointer;
-			font-size: 0.75rem;
-			color: #fff;
-			font-family: 'Press Start 2P', cursive, sans-serif;
-			font-weight: 500;
-			box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.15);
-			transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-		}
-		.flag-btn.active, .flag-btn:hover {
-			background: #159957;
-			color: #fff;
-			box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.25);
-		}
-		table {
-			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0;
-			margin-top: 16px;
-			background: rgba(255,255,255,0.25);
-			border-radius: 12px;
-			overflow: hidden;
-			box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.10);
-		}
-		th, td {
-			padding: 16px 12px;
-			text-align: left;
-			color: #222;
-			font-family: 'Press Start 2P', cursive, sans-serif;
-			font-size: 0.7rem;
-		}
-		th {
-			background: rgba(255,255,255,0.35);
-			color: #155799;
-			font-size: 0.8rem;
-			font-weight: 600;
-			border-bottom: 2px solid #15995744;
-		}
-		tr {
-			transition: background 0.2s;
-		}
-		tbody tr:hover {
-			background: rgba(21, 87, 153, 0.08);
-		}
-		td {
-			border-bottom: 1px solid #15995722;
-		}
-		tbody tr:last-child td {
-			border-bottom: none;
-		}
-	</style>
+	<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-	<div class="container">
-		<h1>The Siege of GitHub: Capture the Flag Rankings</h1>
+	<div class="side-menu" id="sideMenu">
+		<div class="side-menu-header">
+			<span style="font-family: 'Press Start 2P', cursive, sans-serif; font-size: 0.8rem; color: #155799;">Flags</span>
+			<button id="closeMenuBtn" class="close-menu-btn" title="Close">&times;</button>
+		</div>
 		<div class="flag-menu" id="flagMenu">
 			<!-- Flag buttons will be injected here -->
 		</div>
+	</div>
+	<button id="burgerBtn" class="burger-btn" title="Show Flags">
+		<span></span>
+		<span></span>
+		<span></span>
+	</button>
+	<div class="container">
+		<h1>The Siege of GitHub: Capture the Flag Rankings</h1>
 		<table>
 			<thead>
 				<tr>
@@ -140,11 +63,63 @@
 		const rankings = Array(flags.length).fill(null);
 		const flagMenu = document.getElementById('flagMenu');
 		const rankingTable = document.getElementById('rankingTable');
+		const sideMenu = document.getElementById('sideMenu');
+		const burgerBtn = document.getElementById('burgerBtn');
+		const closeMenuBtn = document.getElementById('closeMenuBtn');
 		let currentFlag = 0;
 
+		// Side menu open/close logic
+		burgerBtn.addEventListener('click', () => {
+			sideMenu.classList.add('open');
+			burgerBtn.style.display = 'none';
+		});
+		closeMenuBtn.addEventListener('click', () => {
+			sideMenu.classList.remove('open');
+			burgerBtn.style.display = 'flex';
+		});
+
+		// Optional: close menu when clicking outside
+		document.addEventListener('click', (e) => {
+			if (sideMenu.classList.contains('open')) {
+				if (!sideMenu.contains(e.target) && e.target !== burgerBtn) {
+					sideMenu.classList.remove('open');
+					burgerBtn.style.display = 'flex';
+				}
+			}
+		});
+
+		// --- New: Show overall flags captured on initial table ---
+		async function fetchOverallFlagsCaptured() {
+			try {
+				const resp = await fetch('https://raw.githubusercontent.com/vitoc/siege/refs/heads/main/flags_captured.json');
+				if (!resp.ok) throw new Error('Not found');
+				let data = await resp.json();
+				console.log('Overall flags captured data:', data);
+				// Filter out entries with missing or invalid flags_captured
+				data = data.filter(entry => typeof entry.flags_captured === 'number' && !isNaN(entry.flags_captured));
+				// Sort by most flags captured (descending)
+				data.sort((a, b) => b.flags_captured - a.flags_captured);
+				renderOverallTable(data);
+			} catch (e) {
+				rankingTable.innerHTML = '<tr><td colspan="3">No participant data available.</td></tr>';
+			}
+		}
+
+		function renderOverallTable(data) {
+			if (!Array.isArray(data) || data.length === 0) {
+				rankingTable.innerHTML = '<tr><td colspan="3">No participant data available.</td></tr>';
+				return;
+			}
+			const rows = data.map((entry, i) => {
+				return `<tr><td>${i + 1}</td><td>${entry.user}</td><td>${entry.flags_captured}</td></tr>`;
+			}).join('');
+			rankingTable.innerHTML = rows;
+		}
+
+		// --- End new code ---
+
+		// Keep the rest of the flag menu logic for per-flag rankings
 		function getJsonFileName(flagName) {
-			// Convert flag name to lowercase, replace spaces and special chars with '-'
-			// Use the same convention as in the repo: skills-<flag>.json
 			let base = flagName
 				.toLowerCase()
 				.replace(/[^a-z0-9]+/g, '-')
@@ -161,7 +136,6 @@
 				const resp = await fetch(url);
 				if (!resp.ok) throw new Error('Not found');
 				const data = await resp.json();
-				// Sort by time_diff_seconds ascending (lower is better)
 				if (Array.isArray(data)) {
 					rankings[idx] = data
 						.map((entry, i) => ({
@@ -173,7 +147,7 @@
 					rankings[idx] = [];
 				}
 			} catch (e) {
-				rankings[idx] = null; // null means no data
+				rankings[idx] = null;
 			}
 			if (idx === currentFlag) renderTable();
 		}
@@ -212,9 +186,10 @@
 			rankingTable.innerHTML = rows;
 		}
 
-		// Initial render
+		// Initial render: show overall flags captured
 		renderMenu();
-		fetchRanking(currentFlag);
+		alert('Welcome to The Siege of GitHub: Capture the Flag Rankings!\n\nBy default, the rankings table shows overall flags captured by participants. Use the "Show Flags" button to open the side menu and select individual flags to see their specific rankings based on completion time.\n\nEnjoy competing and climbing the leaderboard!');
+		fetchOverallFlagsCaptured();
 	</script>
 </body>
 </html>

@@ -3,6 +3,7 @@ import requests
 import json
 from datetime import datetime, timedelta, timezone
 from github import Github
+import sys
 
 def get_env_repo():
     repo_env = os.environ.get('GITHUB_REPOSITORY')
@@ -77,6 +78,27 @@ def update_json_file(repo_name, user, time_diff):
         json.dump(data, f, indent=2)
         print(f'Updated {filename} with user: {user}, time_diff: {time_diff} seconds')
 
+    update_overall_flags_captured(user)
+
+def update_overall_flags_captured(user):
+    filename = 'flags_captured.json'
+    print(f'Updating overall flags captured file: {filename} for user: {user}')
+    if os.path.exists(filename):
+        with open(filename, 'r') as f:
+            data = json.load(f)
+    else:
+        data = []
+    # Check if user already exists in data
+    user_entry = next((entry for entry in data if entry['user'] == user), None)
+    if user_entry:
+        user_entry['flags_captured'] += 1
+    else:
+        data.append({'user': user, 'flags_captured': 1})
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=2)
+        print(f'Updated {filename} with user: {user}, flags_captured incremented')
+
+
 def check_user_recent_skills(g, username):
     try:
         repos = get_user_forks(g, username)
@@ -106,7 +128,12 @@ def main():
     owner, repo = get_env_repo()
     print(f'Checking stargazers for {owner}/{repo}')
     g = Github(token)
-    input_username = os.environ.get('INPUT_USERNAME')
+    # Accept input_username as a command-line argument or from environment
+    input_username = None
+    if len(sys.argv) > 1:
+        input_username = sys.argv[1]
+    else:
+        input_username = os.environ.get('INPUT_USERNAME')
     if input_username:
         print(f'Checking recent skills for user: {input_username}')
         check_user_recent_skills(g, input_username)
