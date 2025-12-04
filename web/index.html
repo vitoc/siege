@@ -29,7 +29,7 @@
 				<tr>
 					<th>Rank</th>
 					<th>Participant</th>
-					<th>Time (minutes)</th>
+					<th id="scoreHeader">Time (minutes)</th>
 				</tr>
 			</thead>
 			<tbody id="rankingTable">
@@ -110,6 +110,7 @@
 				rankingTable.innerHTML = '<tr><td colspan="3">No participant data available.</td></tr>';
 				return;
 			}
+			document.getElementById('scoreHeader').textContent = 'Flags Captured';
 			const rows = data.map((entry, i) => {
 				return `<tr><td>${i + 1}</td><td>${entry.user}</td><td>${entry.flags_captured}</td></tr>`;
 			}).join('');
@@ -171,6 +172,7 @@
 
 		function renderTable() {
 			const data = rankings[currentFlag];
+			document.getElementById('scoreHeader').textContent = 'Time (minutes)';
 			if (data === null) {
 				rankingTable.innerHTML = '<tr><td colspan="3">No participants in the flag challenge yet.</td></tr>';
 				return;
