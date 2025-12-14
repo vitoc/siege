@@ -1,3 +1,12 @@
+"""
+This script automates the process of tracking recent stargazers of a GitHub repository and their activity on specific forked repositories.
+- It finds the timestamp of when each star was created.
+- For each user who has starred the repository within the last 24 hours, it checks if the user has forked any repositories whose names start with 'skills-' or 'skills-dev'.
+- For each such forked repository, it examines the commit history and calculates the time difference in seconds between the first and last commit, but only if the last commit message is exactly "Congratulations!🎉".
+- The script then records the user's GitHub handle and the calculated time difference in a JSON file named after the forked repository (with a .json extension).
+- If the file does not exist, it creates it; otherwise, it appends the new entry.
+- These JSON files are stored in the repository where this GitHub Action is hosted.
+"""
 import os
 import requests
 import json
